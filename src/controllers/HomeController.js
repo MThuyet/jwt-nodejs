@@ -1,11 +1,5 @@
 import e from 'express';
-import mysql from 'mysql2';
-
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  database: 'jwt',
-});
+import UserService from '../service/UserService';
 
 const handleHelloWorld = (req, res) => {
   return res.render('Home.ejs');
@@ -20,17 +14,10 @@ const handleCreateUser = (req, res) => {
   let password = req.body.password;
   let username = req.body.username;
 
-  connection.query(
-    'INSERT INTO `users`(`email`, `password`, `username`) VALUES (?, ?, ?)',
-    [email, password, username],
-    function (err, results, fields) {
-      if (err) {
-        console.log(err);
-      }
-    }
-  );
+  // UserService.createNewUser(email, password, username);
+  UserService.getUserList();
 
-  res.send('ok');
+  return res.send('ok');
 };
 
 module.exports = { handleHelloWorld, handleUserPage, handleCreateUser };

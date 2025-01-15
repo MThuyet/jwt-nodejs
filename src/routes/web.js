@@ -13,6 +13,7 @@ const initWebRoutes = (app) => {
   router.get('/', HomeController.handleHelloWorld);
   router.get('/user', HomeController.handleUserPage);
   router.post('/user/create-user', HomeController.handleCreateUser);
+  router.post('/user/delete-user/:id', HomeController.handleDeleteUser);
 
   return app.use('/', router); // ứng dụng bắt đầu với /
 };

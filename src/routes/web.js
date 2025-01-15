@@ -1,4 +1,5 @@
 import express from 'express';
+import HomeController from '../controllers/HomeController';
 
 const router = express.Router();
 
@@ -8,11 +9,11 @@ const router = express.Router();
  */
 
 const initWebRoutes = (app) => {
-  router.get('/', (req, res) => {
-    return res.send('Hello World');
-  });
+  // path, handler
+  router.get('/', HomeController.handleHelloWorld);
+  router.get('/user', HomeController.handleUserPage);
 
-  return app.use('/', router);
+  return app.use('/', router); // ứng dụng bắt đầu với /
 };
 
 export default initWebRoutes;

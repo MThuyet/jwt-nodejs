@@ -16,7 +16,7 @@ module.exports = {
     // hardcode dữ liệu mẫu vào db
     await queryInterface.bulkInsert(
       // hàm bulkInsert để insert nhiều row vào db cùng lúc
-      'Users',
+      'User',
       [
         {
           email: 'John Doe',

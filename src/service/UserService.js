@@ -27,74 +27,42 @@ const createNewUser = async (email, password, username) => {
 
 // get user list
 const getUserList = async () => {
-  const connection = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'jwt',
-    Promise: bluebird,
-  });
-
-  try {
-    const [rows, fields] = await connection.execute('SELECT * FROM `user`');
-    return rows;
-  } catch (error) {
-    console.log('check get list user error', error);
-  }
+  let users = [];
+  users = await db.User.findAll();
+  return users;
 };
 
 // delete user
-const deleteUser = async (id) => {
-  const connection = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'jwt',
-    Promise: bluebird,
+const deleteUser = async (userId) => {
+  await db.User.destroy({
+    where: { id: userId },
   });
-
-  try {
-    const [rows, fields] = await connection.execute('DELETE FROM `user` WHERE id = ?', [id]);
-    return rows;
-  } catch (error) {
-    console.log('check delete error', error);
-  }
 };
 
 // get user by id
-const getUserById = async (id) => {
-  const connection = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'jwt',
-    Promise: bluebird,
+const getUserById = async (userId) => {
+  let user = await db.User.findOne({
+    where: {
+      id: userId,
+    },
   });
 
-  try {
-    const [rows, fields] = await connection.execute('SELECT * FROM `user` WHERE id = ?', [id]);
-    return rows;
-  } catch (error) {
-    console.log('check error get user', error);
-  }
+  return user;
 };
 
 // update user
 const updateUser = async (email, username, id) => {
-  const connection = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'jwt',
-    Promise: bluebird,
-  });
-
-  try {
-    const [rows, fields] = await connection.execute('UPDATE `user` SET email = ?, username = ? WHERE id = ?', [
+  await db.User.update(
+    {
       email,
       username,
-      id,
-    ]);
-    return rows;
-  } catch (error) {
-    console.log('check error update', error);
-  }
+    },
+    {
+      where: {
+        id,
+      },
+    }
+  );
 };
 
 module.exports = {

@@ -37,7 +37,7 @@ const hashPassword = (password) => {
 // register new user
 const registerNewUser = async (rawUserData) => {
   try {
-    // check email or phone exist
+    // check email exist
     let isEmailExist = await checkEmailExist(rawUserData.email);
     if (isEmailExist === true) {
       return {
@@ -46,6 +46,7 @@ const registerNewUser = async (rawUserData) => {
       };
     }
 
+    // check phone exist
     let isPhoneExist = await checkPhoneExist(rawUserData.phone);
     if (isPhoneExist === true) {
       return {

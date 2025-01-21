@@ -4,6 +4,7 @@ const testApi = (req, res) => {
   return res.status(200).json({ message: 'Success', data: 'testApi' });
 };
 
+// handle register
 const handleRegister = async (req, res) => {
   try {
     // validation
@@ -40,4 +41,22 @@ const handleRegister = async (req, res) => {
   }
 };
 
-module.exports = { testApi, handleRegister };
+// handle login
+const handleLogin = async (req, res) => {
+  try {
+    let data = await LoginRegisterService.handleUserLogin(req.body);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: 'Error form server', // Error message
+      EC: '-1', // Error code
+      DT: '', // Data
+    });
+  }
+};
+
+module.exports = { testApi, handleRegister, handleLogin };

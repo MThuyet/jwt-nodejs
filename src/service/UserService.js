@@ -28,8 +28,8 @@ const createNewUser = async (email, password, username) => {
 
 // get user list
 const getUserList = async () => {
-  let newUser = await db.User.findOne({
-    where: { id: 1 },
+  let newUser = await db.User.findAll({
+    // where: { id: 1 },
     attributes: ['id', 'email', 'username'],
     include: { model: db.Group, attributes: ['name', 'description'] },
     raw: true,
@@ -46,6 +46,8 @@ const getUserList = async () => {
 
   console.log('check role', role);
   console.log('check user', newUser);
+
+  return newUser;
 };
 
 // delete user
@@ -77,7 +79,7 @@ const updateUser = async (email, username, id) => {
       where: {
         id,
       },
-    }
+    },
   );
 };
 

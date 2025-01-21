@@ -1,5 +1,6 @@
 import db from '../models/index';
 import bcrypt from 'bcryptjs';
+import { Op } from 'sequelize';
 
 // function check email exist
 const checkEmailExist = async (userEmail) => {
@@ -79,6 +80,54 @@ const registerNewUser = async (rawUserData) => {
   }
 };
 
+// check password
+const checkPassword = (inputPassword, hashPassword) => {
+  return bcrypt.compareSync(inputPassword, hashPassword);
+};
+
+// handle login
+const handleUserLogin = async (rawData) => {
+  try {
+    // check user
+    let user = await db.User.findOne({
+      where: {
+        [Op.or]: [{ email: rawData.valueLogin }, { phone: rawData.valueLogin }],
+      },
+    });
+
+    if (user) {
+      console.log('found user with valueLogin: ', rawData.valueLogin);
+
+      // check password
+      let isCorrectPassword = checkPassword(rawData.password, user.password);
+
+      if (isCorrectPassword) {
+        return {
+          EM: 'Login successfully',
+          EC: '0',
+          DT: '',
+        };
+      }
+    }
+
+    console.log('Not found user with email/phone: ', rawData.valueLogin, 'Password: ', rawData.password);
+    return {
+      EM: 'Your email/phone or password is incorrect',
+      EC: '1',
+      DT: '',
+    };
+
+    console.log('check password', isCorrectPassword);
+  } catch (error) {
+    console.log('check create user error', error);
+    return {
+      EM: 'Something went wrong from server',
+      EC: '-2',
+    };
+  }
+};
+
 module.exports = {
   registerNewUser,
+  handleUserLogin,
 };

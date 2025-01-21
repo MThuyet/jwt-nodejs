@@ -12,6 +12,7 @@ const initApiRoutes = (app) => {
   // rest api GET, POST, PUT, DELETE
   router.get('/test-api', ApiController.testApi);
   router.post('/register', ApiController.handleRegister);
+  router.post('/login', ApiController.handleLogin);
 
   return app.use('/api/', router);
 };

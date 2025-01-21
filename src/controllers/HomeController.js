@@ -7,9 +7,8 @@ const handleHelloWorld = (req, res) => {
 
 // get user page
 const handleUserPage = async (req, res) => {
-  await UserService.getUserList();
-  // return res.render('User.ejs', { userList });
-  return res.send('User page');
+  let userList = await UserService.getUserList();
+  return res.render('User.ejs', { userList });
 };
 
 // create new user

@@ -91,11 +91,32 @@ const updateUser = async (data) => {
 
 const deleteUser = async (id) => {
   try {
-    await db.User.delete({
+    let userDelete = await db.User.findOne({
       where: { id },
     });
+
+    if (userDelete) {
+      await userDelete.destroy();
+
+      return {
+        EM: 'Delete user successfully',
+        EC: '0',
+        DT: [],
+      };
+    } else {
+      return {
+        EM: 'User not exist',
+        EC: '2',
+        DT: [],
+      };
+    }
   } catch (error) {
     console.log(error);
+    return {
+      EM: 'Something went wrong with server',
+      EC: '1',
+      DT: [],
+    };
   }
 };
 

@@ -1,11 +1,46 @@
 import { where } from 'sequelize/lib/sequelize';
 import db from '../models/index';
+import { checkEmailExist, checkPhoneExist, hashPassword } from './LoginRegisterService';
 
 const createNewUser = async (data) => {
   try {
-    await db.User.create({});
+    // check email exist
+    let isEmailExist = await checkEmailExist(data.email);
+    if (isEmailExist === true) {
+      return {
+        EM: 'Email already exist',
+        EC: '1',
+        DT: 'email',
+      };
+    }
+
+    // check phone exist
+    let isPhoneExist = await checkPhoneExist(data.phone);
+    if (isPhoneExist === true) {
+      return {
+        EM: 'Phone number already exist',
+        EC: '1',
+        DT: 'phone',
+      };
+    }
+
+    // hash password
+    let hashUserPassword = hashPassword(data.password);
+
+    // create new user
+    await db.User.create({ ...data, password: hashUserPassword });
+    return {
+      EM: 'Create user successfully',
+      EC: 0,
+      DT: [],
+    };
   } catch (error) {
     console.log(error);
+    return {
+      EM: 'Something went wrong with server',
+      EC: '1',
+      DT: [],
+    };
   }
 };
 
@@ -47,6 +82,7 @@ const getUserWithPagination = async (page, limit) => {
       include: { model: db.Group, attributes: ['name', 'description'] },
       offset,
       limit,
+      order: [['id', 'DESC']],
     });
 
     let totalPage = Math.ceil(count / limit);

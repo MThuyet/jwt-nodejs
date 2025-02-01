@@ -6,7 +6,7 @@ const createJWT = (payload) => {
   let token = null;
 
   try {
-    token = jwt.sign({ payload }, key);
+    token = jwt.sign(payload, key);
   } catch (error) {
     console.log(error);
   }
@@ -16,16 +16,74 @@ const createJWT = (payload) => {
 
 const verifyToken = (token) => {
   let key = process.env.JWT_SECRET;
-  let data = null;
+  let decoded = null;
 
   try {
-    let decoded = jwt.verify(token, key);
-    data = decoded;
+    decoded = jwt.verify(token, key);
   } catch (error) {
     console.log(error);
   }
 
-  return data;
+  return decoded;
 };
 
-module.exports = { createJWT, verifyToken };
+const checkUserJWT = (req, res, next) => {
+  let cookie = req.cookies;
+  if (cookie && cookie.jwt) {
+    let token = cookie.jwt;
+    let decoded = verifyToken(token);
+
+    if (decoded) {
+      req.user = decoded;
+      next();
+    } else {
+      return res.status(401).json({
+        EM: 'Unauthorized',
+        EC: '-1',
+        DT: '',
+      });
+    }
+  } else {
+    return res.status(401).json({
+      EM: 'Unauthorized',
+      EC: '-1',
+      DT: '',
+    });
+  }
+};
+
+const checkUserPermission = (req, res, next) => {
+  if (req.user) {
+    let email = req.user.email;
+    let roles = req.user.groupWithRoles.Roles;
+    let currentUrl = req.path;
+
+    if (!roles || roles.length === 0) {
+      return res.status(403).json({
+        EM: `You don't have permission to access ${currentUrl}`,
+        EC: '-1',
+        DT: '',
+      });
+    }
+
+    let canAccess = roles.some((role) => role.url === currentUrl);
+
+    if (canAccess === true) {
+      next();
+    } else {
+      return res.status(403).json({
+        EM: `You don't have permission to access ${currentUrl}`,
+        EC: '-1',
+        DT: '',
+      });
+    }
+  } else {
+    return res.status(401).json({
+      EM: 'Unauthorized',
+      EC: '-1',
+      DT: '',
+    });
+  }
+};
+
+module.exports = { createJWT, verifyToken, checkUserJWT, checkUserPermission };

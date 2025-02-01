@@ -119,7 +119,7 @@ const handleUserLogin = async (rawData) => {
         return {
           EM: 'Login successfully',
           EC: '0',
-          DT: { access_token: token, data: groupWithRoles },
+          DT: { access_token: token, groupWithRoles },
         };
       }
     }

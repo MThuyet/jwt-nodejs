@@ -2,6 +2,7 @@ import express from 'express';
 import ApiController from '../controllers/ApiController';
 import UserController from '../controllers/UserController';
 import GroupController from '../controllers/GroupController';
+import { checkUserJWT, checkUserPermission } from '../middleware/JWTAction';
 
 const router = express.Router();
 
@@ -12,12 +13,11 @@ const router = express.Router();
 
 const initApiRoutes = (app) => {
   // rest api GET, POST, PUT, DELETE
-  router.get('/test-api', ApiController.testApi);
   router.post('/register', ApiController.handleRegister);
   router.post('/login', ApiController.handleLogin);
 
   // users
-  router.get('/user/read/', UserController.readFunc);
+  router.get('/user/read/', checkUserJWT, checkUserPermission, UserController.readFunc);
   router.post('/user/create', UserController.createFunc);
   router.put('/user/update', UserController.updateFunc);
   router.delete('/user/delete', UserController.deleteFunc);

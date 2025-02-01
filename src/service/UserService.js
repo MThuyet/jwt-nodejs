@@ -29,7 +29,6 @@ const createNewUser = async (email, password, username) => {
 // get user list
 const getUserList = async () => {
   let newUser = await db.User.findAll({
-    // where: { id: 1 },
     attributes: ['id', 'email', 'username'],
     include: { model: db.Group, attributes: ['name', 'description'] },
     raw: true,
@@ -37,15 +36,12 @@ const getUserList = async () => {
   });
 
   // test relationship
-  let role = await db.Role.findAll({
-    attributes: ['id', 'url', 'description'],
-    include: { model: db.Group, where: { id: 1 }, attributes: ['name', 'description'] },
-    raw: true,
-    nest: true,
-  });
-
-  console.log('check role', role);
-  console.log('check user', newUser);
+  // let role = await db.Role.findAll({
+  //   attributes: ['id', 'url', 'description'],
+  //   include: { model: db.Group, where: { id: 1 }, attributes: ['name', 'description'] },
+  //   raw: true,
+  //   nest: true,
+  // });
 
   return newUser;
 };

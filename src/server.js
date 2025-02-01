@@ -3,6 +3,7 @@ import configViewEngine from './config/ViewEngine';
 import initWebRoutes from './routes/web';
 import initApiRoutes from './routes/api';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import Connection from './config/ConnectDB';
 import configCORS from './config/Cors';
 
@@ -25,9 +26,16 @@ app.use(bodyParser.json()); // parse application/json
 // config view engine
 configViewEngine(app);
 
+// config cookie parser
+app.use(cookieParser());
+
 // init web routes and api
 initWebRoutes(app);
 initApiRoutes(app);
+
+app.use((req, res) => {
+  return res.send('404 not found');
+});
 
 app.listen(PORT, () => {
   console.log('App listening http://localhost:' + PORT);

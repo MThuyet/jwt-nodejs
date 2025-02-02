@@ -111,7 +111,6 @@ const handleUserLogin = async (rawData) => {
           email: user.email,
           username: user.username,
           groupWithRoles,
-          expiresIn: process.env.JWT_EXPIRES_IN,
         };
 
         // create token

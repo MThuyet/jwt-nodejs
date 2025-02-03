@@ -1,6 +1,9 @@
 import { raw } from 'body-parser';
 import db from '../models/index';
+import { where } from 'sequelize/lib/sequelize';
+import { at, includes } from 'lodash';
 
+// create new roles
 const createNewRoles = async (roles) => {
   try {
     let currentRoles = await db.Role.findAll({
@@ -44,6 +47,7 @@ const createNewRoles = async (roles) => {
   }
 };
 
+// get all roles
 const getAllRoles = async () => {
   try {
     let data = await db.Role.findAll({
@@ -66,6 +70,7 @@ const getAllRoles = async () => {
   }
 };
 
+// delete roles
 const deleteRole = async (id) => {
   try {
     let role = await db.Role.findOne({
@@ -98,4 +103,40 @@ const deleteRole = async (id) => {
   }
 };
 
-module.exports = { createNewRoles, getAllRoles, deleteRole };
+// getRoleByGroup
+const getRoleByGroup = async (id) => {
+  try {
+    if (!id) {
+      return {
+        EM: 'Not found any role by group',
+        EC: '2',
+        DT: [],
+      };
+    }
+
+    let roles = await db.Group.findOne({
+      where: {
+        id: id,
+      },
+      attributes: ['id', 'name', 'description'],
+      include: { model: db.Role, attributes: ['id', 'url', 'description'], through: { attributes: [] } },
+    });
+
+    if (roles) {
+      return {
+        EM: 'Get role by group successfully',
+        EC: 0,
+        DT: roles,
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      EM: 'Something went wrong with server',
+      EC: '1',
+      DT: [],
+    };
+  }
+};
+
+module.exports = { createNewRoles, getAllRoles, deleteRole, getRoleByGroup };

@@ -17,6 +17,7 @@ const initApiRoutes = (app) => {
   // rest api GET, POST, PUT, DELETE
   router.post('/register', ApiController.handleRegister);
   router.post('/login', ApiController.handleLogin);
+  router.post('/logout', ApiController.handleLogout);
 
   router.get('/account', UserController.getUserAccount);
 

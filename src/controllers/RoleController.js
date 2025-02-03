@@ -3,19 +3,9 @@ import RoleApiService from '../service/RoleApiService';
 
 const readFunc = async (req, res) => {
   try {
-    if (req.query.page && req.query.limit) {
-      let page = req.query.page;
-      let limit = req.query.limit;
+    let data = await RoleApiService.getAllRoles();
 
-      let data = await UserApiService.getUserWithPagination(+page, +limit);
-
-      return res.status(200).json({
-        EM: data.EM,
-        EC: data.EC,
-        DT: data.DT,
-      });
-    } else {
-      let data = await UserApiService.getAllUser();
+    if (data && +data.EC === 0) {
       return res.status(200).json({
         EM: data.EM,
         EC: data.EC,
@@ -50,6 +40,7 @@ const createFunc = async (req, res) => {
   }
 };
 
+// todo
 const updateFunc = async (req, res) => {
   try {
     let data = await UserApiService.updateUser(req.body);
@@ -70,7 +61,7 @@ const updateFunc = async (req, res) => {
 
 const deleteFunc = async (req, res) => {
   try {
-    let data = await UserApiService.deleteUser(req.body.id);
+    let data = await RoleApiService.deleteRole(req.body.id);
     return res.status(200).json({
       EM: data.EM,
       EC: data.EC,

@@ -44,4 +44,58 @@ const createNewRoles = async (roles) => {
   }
 };
 
-module.exports = { createNewRoles };
+const getAllRoles = async () => {
+  try {
+    let data = await db.Role.findAll({
+      attributes: ['id', 'url', 'description'],
+      raw: true,
+      order: [['id', 'DESC']],
+    });
+
+    return {
+      EM: 'Get data all roles successfully',
+      EC: 0,
+      DT: data,
+    };
+  } catch (error) {
+    return {
+      EM: 'Something went wrong with server',
+      EC: '1',
+      DT: [],
+    };
+  }
+};
+
+const deleteRole = async (id) => {
+  try {
+    let role = await db.Role.findOne({
+      where: {
+        id,
+      },
+    });
+
+    let data = await role.destroy();
+
+    if (data) {
+      return {
+        EM: 'Delete roles successfully',
+        EC: 0,
+        DT: data,
+      };
+    } else {
+      return {
+        EM: 'Delete roles fail',
+        EC: '1',
+        Dt: [],
+      };
+    }
+  } catch (error) {
+    return {
+      EM: 'Something went wrong with server',
+      EC: '1',
+      DT: [],
+    };
+  }
+};
+
+module.exports = { createNewRoles, getAllRoles, deleteRole };
